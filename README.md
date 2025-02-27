@@ -4,7 +4,7 @@ This is a simple React application that demonstrates how to use a custom useAPI 
 ## Features
 
 * **Custom `useAPI` Hook**: Centralized API call logic with support for `GET`, `POST`, `PUT`, and `DELETE` requests.
-* **Authentication**: Login functionality using the ReqRes.in API to fetch and store a bearer token.
+* **Authentication**: Login functionality using the [ReqRes.in API](https://reqres.in/) to fetch and store a bearer token.
 * **CRUD Operations**: Examples of fetching users, creating a new user, updating a user, and deleting a user.
 
 ## Files
