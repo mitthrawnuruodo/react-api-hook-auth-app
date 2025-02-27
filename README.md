@@ -9,8 +9,8 @@ This is a simple React application that demonstrates how to use a custom useAPI 
 
 ## Files
 
-App.jsx: Main component that handles UI and API interactions.
-useAPI.js: Custom hook for making API requests.
+* **`App.jsx`**: Main component that handles UI and API interactions.
+* **`hooks/useAPI.js`**: Custom hook for making API requests.
 
 ## Getting Started
 
