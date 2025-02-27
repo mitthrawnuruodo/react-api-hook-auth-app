@@ -22,31 +22,16 @@ const App = () => {
   // On success, stores the token in localStorage and updates local state.
   const login = async () => {
     try {
-      // Send a POST request with login credentials to ReqRes.in
-      const res = await fetch('https://reqres.in/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: 'eve.holt@reqres.in',
-          password: 'cityslicka',
-        }),
+      // Use the post() function from useAPI to send a POST request
+      const result = await post('https://reqres.in/api/login', {
+        email: 'eve.holt@reqres.in',
+        password: 'cityslicka',
       });
-      
-      // If the response is not ok, read and throw an error message.
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || 'Login failed');
-      }
-      
-      // Parse the response JSON to get the token.
-      const result = await res.json();
-      // Store the token in localStorage for later use by the useAPI hook.
+      // Store the token in localStorage and update state
       localStorage.setItem('bearerToken', result.token);
-      // Update local state with the token.
       setToken(result.token);
       console.log('Logged in! Token:', result.token);
     } catch (err) {
-      // If any error occurs during login, update the error state and log it.
       setLoginError(err.message);
       console.error('Login error:', err);
     }
