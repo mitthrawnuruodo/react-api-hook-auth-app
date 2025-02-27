@@ -1,15 +1,28 @@
 // src/App.jsx
+// This is the main component for the ReqRes.in API demo.
+// It allows a user to log in and then perform GET, POST, PUT, and DELETE requests.
+
 import { useState } from 'react';
-import useAPI from './hooks/useAPI';
+import useAPI from './hooks/useAPI'; // Import our custom API hook
 
 const App = () => {
+  // token: stores the authentication token after a successful login
+  // loginError: stores any error messages that occur during login
   const [token, setToken] = useState('');
-  const { data, error, loading, get, post, put, delete: remove } = useAPI();
   const [loginError, setLoginError] = useState('');
 
-  // Login function: logs in using ReqRes.in and stores the token
+  // Destructure the API functions and state from our custom hook.
+  // data: response data from the API calls
+  // error: error message if any API call fails
+  // loading: boolean flag indicating if a request is in progress
+  // get, post, put, delete (aliased as remove): functions to perform the respective HTTP methods
+  const { data, error, loading, get, post, put, delete: remove } = useAPI();
+
+  // Function to log in via ReqRes.in's login endpoint.
+  // On success, stores the token in localStorage and updates local state.
   const login = async () => {
     try {
+      // Send a POST request with login credentials to ReqRes.in
       const res = await fetch('https://reqres.in/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -19,24 +32,30 @@ const App = () => {
         }),
       });
       
+      // If the response is not ok, read and throw an error message.
       if (!res.ok) {
         const errText = await res.text();
         throw new Error(errText || 'Login failed');
       }
       
+      // Parse the response JSON to get the token.
       const result = await res.json();
+      // Store the token in localStorage for later use by the useAPI hook.
       localStorage.setItem('bearerToken', result.token);
+      // Update local state with the token.
       setToken(result.token);
       console.log('Logged in! Token:', result.token);
     } catch (err) {
+      // If any error occurs during login, update the error state and log it.
       setLoginError(err.message);
       console.error('Login error:', err);
     }
   };
 
-  // GET: Fetch a list of users
+  // Function to perform a GET request to fetch a list of users.
   const fetchUsers = async () => {
     try {
+      // Call the get method from our hook with the endpoint URL.
       const response = await get('https://reqres.in/api/users?page=2');
       console.log('GET users:', response);
     } catch (err) {
@@ -44,10 +63,12 @@ const App = () => {
     }
   };
 
-  // POST: Create a new user
+  // Function to perform a POST request to create a new user.
   const createUser = async () => {
     try {
+      // Define a new user object to send in the request body.
       const newUser = { name: 'John Doe', job: 'Developer' };
+      // Call the post method with the endpoint URL and the user data.
       const response = await post('https://reqres.in/api/users', newUser);
       console.log('POST create user:', response);
     } catch (err) {
@@ -55,11 +76,12 @@ const App = () => {
     }
   };
 
-  // PUT: Update an existing user
+  // Function to perform a PUT request to update an existing user.
   const updateUser = async () => {
     try {
+      // Define updated user data.
       const updatedUser = { name: 'Jane Doe', job: 'Manager' };
-      // ReqRes.in supports updating a user at /api/users/2
+      // ReqRes.in supports updating a user at /api/users/2.
       const response = await put('https://reqres.in/api/users/2', updatedUser);
       console.log('PUT update user:', response);
     } catch (err) {
@@ -67,10 +89,11 @@ const App = () => {
     }
   };
 
-  // DELETE: Remove a user
+  // Function to perform a DELETE request to remove a user.
   const deleteUser = async () => {
     try {
-      // ReqRes.in supports deletion at /api/users/2 (response is empty)
+      // ReqRes.in supports deletion at /api/users/2.
+      // Note: This endpoint returns an empty response, which is handled in the hook.
       const response = await remove('https://reqres.in/api/users/2');
       console.log('DELETE user:', response);
     } catch (err) {
@@ -81,12 +104,14 @@ const App = () => {
   return (
     <div style={{ padding: '20px' }}>
       <h1>ReqRes.in API Demo</h1>
+      {/* If not logged in, show the login button and any error message */}
       {!token ? (
         <div>
           <button onClick={login}>Login</button>
           {loginError && <p style={{ color: 'red' }}>Login Error: {loginError}</p>}
         </div>
       ) : (
+        // Once logged in, display the token and buttons to trigger API calls.
         <div>
           <p>Logged in! Token: {token}</p>
           <button onClick={fetchUsers}>GET Users</button>
@@ -95,8 +120,11 @@ const App = () => {
           <button onClick={deleteUser}>DELETE User</button>
         </div>
       )}
+      {/* Show loading indicator if an API call is in progress */}
       {loading && <p>Loading...</p>}
+      {/* Display error messages if any API call fails */}
       {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
+      {/* Render the returned data if available */}
       {data && (
         <div>
           <h3>Response Data:</h3>
