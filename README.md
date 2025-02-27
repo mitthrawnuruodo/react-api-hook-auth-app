@@ -35,6 +35,6 @@ Open your browser and navigate to http://localhost:5173 to view the app.
 
 ## Dependencies
 
-**React**: ^19.0.0
-**Vite**: ^6.2.0
-**ESLint**: ^9.21.0
+* **React**: ^19.0.0
+* **Vite**: ^6.2.0
+* **ESLint**: ^9.21.0
